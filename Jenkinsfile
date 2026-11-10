@@ -1,25 +1,20 @@
 pipeline {
     agent any
 
-    parameters {
-        string(
-            name: 'PROJECT_NAME',
-            defaultValue: 'StudentManagement',
-            description: 'Enter project name'
-        )
-    }
-
-    environment {
-        VERSION = '1.0'
-    }
-
     stages {
-        stage('Display Information') {
+        stage('Build') {
             steps {
-                echo "Project: ${params.PROJECT_NAME}"
-                echo "Version: ${env.VERSION}"
-                echo "Build number: ${env.BUILD_NUMBER}"
-                echo "Workspace: ${env.WORKSPACE}"
+                echo 'Building application'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+
+            steps {
+                echo 'Deploying application'
             }
         }
     }
