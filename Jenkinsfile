@@ -29,6 +29,13 @@ pipeline {
             }
         }
     }
+    stage('Archive') {
+    steps {
+        archiveArtifacts artifacts: 'out/**/*.class',
+                         fingerprint: true
+    }
+}
+    
 
     post {
         success {
