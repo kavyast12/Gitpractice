@@ -1,53 +1,26 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'PROJECT_NAME',
+            defaultValue: 'StudentManagement',
+            description: 'Enter project name'
+        )
+    }
+
+    environment {
+        VERSION = '1.0'
+    }
+
     stages {
-
-        stage('Checkout') {
+        stage('Display Information') {
             steps {
-                echo 'Source code checkout'
-                checkout scm
+                echo "Project: ${params.PROJECT_NAME}"
+                echo "Version: ${env.VERSION}"
+                echo "Build number: ${env.BUILD_NUMBER}"
+                echo "Workspace: ${env.WORKSPACE}"
             }
-        }
-
-        stage('Build') {
-            steps {
-                bat '''
-                    if not exist out mkdir out
-                    javac -d out Hello.java
-                    if errorlevel 1 exit /b 1
-                '''
-            }
-        }
-
-        stage('Run') {
-            steps {
-                bat '''
-                    java -cp out Hello
-                    if errorlevel 1 exit /b 1
-                '''
-            }
-        }
-    }
-    stage('Archive') {
-    steps {
-        archiveArtifacts artifacts: 'out/**/*.class',
-                         fingerprint: true
-    }
-}
-    
-
-    post {
-        success {
-            echo 'Java application executed successfully'
-        }
-
-        failure {
-            echo 'Java application execution failed'
-        }
-
-        always {
-            echo 'Pipeline finished'
         }
     }
 }
