@@ -2,22 +2,45 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
-                echo 'Source code is ready'
+                echo 'Source code checkout'
+                checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building application'
+                bat '''
+                    if not exist out mkdir out
+                    javac -d out Hello.java
+                    if errorlevel 1 exit /b 1
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Run') {
             steps {
-                echo 'Testing application'
+                bat '''
+                    java -cp out Hello
+                    if errorlevel 1 exit /b 1
+                '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Java application executed successfully'
+        }
+
+        failure {
+            echo 'Java application execution failed'
+        }
+
+        always {
+            echo 'Pipeline finished'
         }
     }
 }
